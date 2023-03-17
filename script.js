@@ -1,6 +1,6 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyD5It1IQXxZT57QNzF9_A1wphQbLY6L9Cw",
@@ -15,19 +15,6 @@ const app = initializeApp(firebaseConfig);
 const db=getFirestore();
 const colRef=collection(db,"bookmarks");
 
-const addForm=document.querySelector(".add");
-addForm.addEventListener("submit", event =>{
-    event.preventDefault();
-    addDoc(colRef,{
-        link: addForm.link.value,
-        title: addForm.title.value,
-        category: addForm.category.value,
-        createdAt: serverTimestamp()
-    }).then(()=>{
-        showCard();
-        addForm.reset();
-    });
-});
 
 function generateTemplate(response,id){
     return `<div class="card">
@@ -57,3 +44,17 @@ function showCard(){
         })
 }
 showCard();
+
+const addForm=document.querySelector(".add");
+addForm.addEventListener("submit", event =>{
+    event.preventDefault();
+    addDoc(colRef,{
+        link: addForm.link.value,
+        title: addForm.title.value,
+        category: addForm.category.value,
+        createdAt: serverTimestamp()
+    }).then(()=>{
+        showCard();
+        addForm.reset();
+    });
+});
