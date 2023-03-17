@@ -133,6 +133,18 @@
     color: #EB596E;
     cursor: pointer;
 }
+.card .subInformation .category.netflix{
+    background-color: #b3010a;
+}
+.card .subInformation .category.prime{
+    background-color:#146Bc2;
+}
+.card .subInformation .category.youtube{
+    background-color: #4d4d4d;
+}
+.card .subInformation .category.other{
+    background-color: #c47600;
+}
 @media(max-width: 800px){
     .create .add{
         flex-direction: column;
