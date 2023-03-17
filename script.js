@@ -25,9 +25,22 @@ function generateTemplate(response,id){
                     </p>
                     <a href="${response.link}" target="_blank"><i class="bi bi-box-arrow-up-right website"></i></a>
                     <a href="https://www.google.com/search?q=${response.title}" target="_blank"><i class="bi bi-google search"></i></a>
-                    <span><i class="bi bi-trash delete" data-id="${response.id}"></i></span>
+                    <span><i class="bi bi-trash delete" data-id="${id}"></i></span>
                 </div>
             </div>`;
+}
+
+function deleteEvent(){
+    const deleteButtons = document.querySelectorAll("i.delete");
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", event => {
+            const deleteRef = doc(db, "bookmarks", button.dataset.id);
+            deleteDoc(deleteRef)
+                .then(() => {
+                    button.parentElement.parentElement.parentElement.remove();
+                })
+        })
+    });
 }
 
 const cards=document.querySelector(".cards");
@@ -37,7 +50,8 @@ function showCard(){
         .then((data)=>{
             data.docs.forEach(document =>{
                 cards.innerHTML+= generateTemplate(document.data(),document.id);
-            })
+            });
+            deleteEvent();
         })
         .catch((error)=>{
             console.log(error);
