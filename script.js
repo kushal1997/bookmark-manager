@@ -1,6 +1,6 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc, orderBy, query, where, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyD5It1IQXxZT57QNzF9_A1wphQbLY6L9Cw",
@@ -46,7 +46,8 @@ function deleteEvent(){
 const cards=document.querySelector(".cards");
 function showCard(){
     cards.innerHTML="";
-    getDocs(colRef)
+    const qRef=query(colRef,orderBy("createdAt") );
+    getDocs(qRef)
         .then((data)=>{
             data.docs.forEach(document =>{
                 cards.innerHTML+= generateTemplate(document.data(),document.id);
@@ -71,4 +72,38 @@ addForm.addEventListener("submit", event =>{
         showCard();
         addForm.reset();
     });
+});
+
+function filteredCards(category){
+    if(category==='All'){
+        showCard();
+    }else{
+        const qryRef =query(colRef, where("category","==",category.toLowerCase()), orderBy("createdAt"));
+        cards.innerHTML="";
+        getDocs(qryRef)
+            .then(data => {
+                data.docs.forEach(doc=>{
+                    cards.innerHTML+=generateTemplate(doc.data(),doc.id);
+                })
+                
+                deleteEvent();
+            })
+            .catch(error =>{
+                console.log(error);
+            });
+    }
+        
+}
+
+
+const categoryList=document.querySelector(".categoryList");
+const categorySpan=document.querySelectorAll(".categoryList span");
+categoryList.addEventListener("click", event =>{
+    if(event.target.tagName ==="SPAN"){
+        filteredCards(event.target.innerText);
+        categorySpan.forEach(span=>{
+            span.classList.remove("active");
+            event.target.classList.add("active");
+        })
+    }
 });
